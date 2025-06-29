@@ -1,0 +1,33 @@
+/* 模型选择器样式 */
+.model-selector-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+.model-selector-label {
+  color: rgba(255, 255, 255, 0.7);
+  margin-right: 10px;
+  font-size: 0.9rem;
+}
+
+.model-selector {
+  width: 200px;
+}
+
+.model-option {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-name {
+  font-weight: bold;
+  color: var(--neon-blue);
+}
+
+.model-description {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 3px;
+}

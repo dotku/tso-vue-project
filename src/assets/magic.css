@@ -1,0 +1,147 @@
+/* 魔幻科技主题全局样式 */
+:root {
+  --primary-gradient: linear-gradient(45deg, #3a6cf4, #00d0ff);
+  --magic-gradient: linear-gradient(to right, #7303c0, #03a9f4, #38ef7d);
+  --cyberpunk-gradient: linear-gradient(to right, #ec38bc, #7303c0, #03a9f4);
+  --tech-dark: #151c38;
+  --tech-light: #e0f7ff;
+  --tech-accent: #5e35b1;
+  --magic-glow: 0 0 15px rgba(0, 208, 255, 0.5);
+  --magic-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  --neon-blue: #00d0ff;
+  --neon-purple: #b400ff;
+  --neon-pink: #ff00e6;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 208, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 208, 255, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 208, 255, 0.5);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.magic-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--magic-shadow);
+  transition: all 0.3s ease;
+}
+
+.magic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.magic-button {
+  background: var(--magic-gradient);
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: var(--magic-glow);
+}
+
+.magic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 208, 255, 0.6);
+}
+
+.magic-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  padding: 12px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.magic-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 208, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 208, 255, 0.3);
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+.glowing {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* 这个类可以添加魔法颗粒背景 */
+.magic-particles {
+  position: relative;
+  overflow: hidden;
+}
+
+.magic-particles::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 208, 255, 0.2) 0%, transparent 10%),
+    radial-gradient(circle at 30% 50%, rgba(180, 0, 255, 0.2) 0%, transparent 8%),
+    radial-gradient(circle at 70% 30%, rgba(255, 0, 230, 0.2) 0%, transparent 12%),
+    radial-gradient(circle at 90% 80%, rgba(0, 208, 255, 0.2) 0%, transparent 8%);
+  z-index: -1;
+  opacity: 0.7;
+  pointer-events: none;
+}
