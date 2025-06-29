@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Login from "../components/Login.vue";
 import Register from "../components/Register.vue";
 import Message from "../components/Message.vue";
+import Profile from "../components/Profile.vue";
 import PreviewDemo from "../components/PreviewDemo.vue";
 import SystemSetup from "../components/SystemSetup.vue";
 import AdminSettings from "../components/AdminSettings.vue";
@@ -57,6 +58,12 @@ const router = createRouter({
       path: "/message",
       name: "message",
       component: Message,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
       meta: { requiresAuth: true },
     },
     {

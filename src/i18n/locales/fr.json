@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "goBack": "Retour",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "info": "Information"
+  },
+  "nav": {
+    "newChat": "Nouveau Chat",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
+  "chat": {
+    "placeholder": "Tapez votre message...",
+    "send": "Envoyer",
+    "aiModel": "Modèle IA",
+    "searchEngine": "Moteur de Recherche",
+    "tavilySearch": "Recherche Tavily AI",
+    "defaultSearch": "Recherche par Défaut",
+    "googleSearch": "Google",
+    "bingSearch": "Bing",
+    "searching": "Recherche...",
+    "searchComplete": "Recherche Terminée",
+    "downloadReport": "Télécharger le Rapport",
+    "expandSnippet": "Développer l'Extrait",
+    "collapseSnippet": "Réduire l'Extrait",
+    "copyToClipboard": "Copier dans le Presse-papiers",
+    "copied": "Copié !",
+    "newConversation": "Nouvelle Conversation",
+    "conversationHistory": "Historique des Conversations",
+    "searchAssistant": "Assistant de Recherche",
+    "searchProcess": "Processus de Recherche",
+    "processing": "Traitement...",
+    "emptyStateText": "Entrez une question pour commencer votre recherche",
+    "inputPlaceholder": "Entrez votre question..."
+  },
+  "profile": {
+    "title": "Paramètres du Profil",
+    "personalInfo": "Informations Personnelles",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "avatar": "Avatar",
+    "language": "Langue",
+    "theme": "Thème",
+    "preferences": "Préférences",
+    "account": "Paramètres du Compte",
+    "changePassword": "Changer le Mot de Passe",
+    "deleteAccount": "Supprimer le Compte",
+    "saveChanges": "Enregistrer les Modifications",
+    "languageChanged": "Langue changée avec succès"
+  },
+  "languages": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "ja": "日本語"
+  },
+  "themes": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "auto": "Automatique"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "email": "Email",
+    "forgotPassword": "Mot de passe oublié ?",
+    "loginSuccess": "Connexion réussie",
+    "registerSuccess": "Inscription réussie",
+    "loginFailed": "Échec de la connexion",
+    "registerFailed": "Échec de l'inscription"
+  }
+}

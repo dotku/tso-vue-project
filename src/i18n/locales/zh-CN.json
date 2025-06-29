@@ -1,0 +1,87 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "goBack": "返回",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息"
+  },
+  "nav": {
+    "newChat": "新建聊天",
+    "logout": "退出",
+    "profile": "个人资料",
+    "settings": "设置"
+  },
+  "chat": {
+    "placeholder": "输入您的消息...",
+    "send": "发送",
+    "aiModel": "AI模型",
+    "searchEngine": "搜索引擎",
+    "tavilySearch": "Tavily AI搜索",
+    "defaultSearch": "默认搜索",
+    "googleSearch": "Google",
+    "bingSearch": "Bing",
+    "searching": "搜索中...",
+    "searchComplete": "搜索完成",
+    "downloadReport": "下载报告",
+    "expandSnippet": "展开片段",
+    "collapseSnippet": "收起片段",
+    "copyToClipboard": "复制到剪贴板",
+    "copied": "已复制！",
+    "newConversation": "新对话",
+    "conversationHistory": "对话历史",
+    "searchAssistant": "搜索助手",
+    "searchProcess": "搜索过程",
+    "processing": "处理中...",
+    "emptyStateText": "输入问题开始您的搜索之旅",
+    "inputPlaceholder": "输入你的问题..."
+  },
+  "profile": {
+    "title": "个人设置",
+    "personalInfo": "个人信息",
+    "username": "用户名",
+    "email": "邮箱",
+    "avatar": "头像",
+    "language": "语言",
+    "theme": "主题",
+    "preferences": "偏好设置",
+    "account": "账户设置",
+    "changePassword": "修改密码",
+    "deleteAccount": "删除账户",
+    "saveChanges": "保存更改",
+    "languageChanged": "语言切换成功"
+  },
+  "languages": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "ja": "日本語"
+  },
+  "themes": {
+    "light": "浅色",
+    "dark": "深色",
+    "auto": "自动"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "username": "用户名",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "email": "邮箱",
+    "forgotPassword": "忘记密码？",
+    "loginSuccess": "登录成功",
+    "registerSuccess": "注册成功",
+    "loginFailed": "登录失败",
+    "registerFailed": "注册失败"
+  }
+}

@@ -8,25 +8,24 @@
             <img src="../assets/tsoai-logo.png" alt="TSOai" class="logo-img" />
             <!-- <span class="logo-text">TSOai</span> -->
           </div>
-          <el-button 
-            class="new-chat-btn"
-            @click="createNewConversation"
-          >
-            + 新建聊天
+          <el-button class="new-chat-btn" @click="createNewConversation">
+            {{ $t("nav.newChat") }}
           </el-button>
         </div>
-        
+
         <div class="conversation-list">
-          <div 
-            v-for="conv in conversations" 
-            :key="conv.id" 
+          <div
+            v-for="conv in conversations"
+            :key="conv.id"
             class="conversation-item"
-            :class="{ 'active': currentConversationId === conv.id }"
+            :class="{ active: currentConversationId === conv.id }"
             @click="switchConversation(conv.id)"
           >
             <div class="conversation-title">{{ conv.title }}</div>
-            <div class="conversation-time">{{ formatTime(conv.lastUpdateTime) }}</div>
-            <el-button 
+            <div class="conversation-time">
+              {{ formatTime(conv.lastUpdateTime) }}
+            </div>
+            <el-button
               class="delete-btn"
               @click.stop="deleteConversation(conv.id)"
             >
@@ -37,17 +36,23 @@
 
         <div class="sidebar-footer">
           <div class="user-info">
-            <el-avatar :size="32" class="user-avatar">
-              {{ username.charAt(0).toUpperCase() }}
-            </el-avatar>
+            <el-button
+              class="profile-btn"
+              @click="goToProfile"
+              size="small"
+              circle
+            >
+              <el-avatar :size="32" class="user-avatar">
+                {{ username.charAt(0).toUpperCase() }}
+              </el-avatar>
+            </el-button>
             <span class="username">{{ username }}</span>
           </div>
-          <el-button 
-            class="logout-btn"
-            @click="handleLogout"
-          >
-            退出
-          </el-button>
+          <div class="user-actions">
+            <el-button class="logout-btn" @click="handleLogout" size="small">
+              {{ $t("nav.logout") }}
+            </el-button>
+          </div>
         </div>
       </div>
 
@@ -57,30 +62,43 @@
         <div class="message-list" ref="messageList">
           <!-- 空状态 -->
           <div v-if="messages.length === 0" class="empty-state">
-            <img src="../assets/input_logo.png" alt="开始聊天" class="empty-icon" />
-            <p class="empty-text">输入问题，开始你的搜索之旅</p>
+            <img
+              src="../assets/input_logo.png"
+              alt="开始聊天"
+              class="empty-icon"
+            />
+            <p class="empty-text">{{ $t("chat.emptyStateText") }}</p>
           </div>
 
           <!-- 消息列表 -->
-          <div 
-            v-for="(msg, index) in messages" 
-            :key="index" 
+          <div
+            v-for="(msg, index) in messages"
+            :key="index"
             class="message-item"
-            :class="[msg.type, msg.type === 'system' ? 'ai-message' : 'user-message']"
+            :class="[
+              msg.type,
+              msg.type === 'system' ? 'ai-message' : 'user-message',
+            ]"
           >
             <div class="message-avatar">
-              <el-avatar 
-                :size="36" 
+              <el-avatar
+                :size="36"
                 :src="msg.type === 'system' ? '../assets/ai-avatar.png' : ''"
               >
-                {{ msg.type === 'user' ? username.charAt(0).toUpperCase() : 'AI' }}
+                {{
+                  msg.type === "user"
+                    ? username.charAt(0).toUpperCase()
+                    : $t("chat.searchAssistant")
+                }}
               </el-avatar>
             </div>
 
             <div class="message-content">
               <div class="message-info">
                 <span class="sender-name">
-                  {{ msg.type === 'user' ? username : '搜索助手' }}
+                  {{
+                    msg.type === "user" ? username : $t("chat.searchAssistant")
+                  }}
                 </span>
                 <span class="message-time">{{ msg.time }}</span>
               </div>
@@ -95,37 +113,70 @@
                 <!-- 修改搜索过程显示 -->
                 <div class="search-process-wrapper">
                   <div v-if="msg.thinkingSteps?.length" class="search-process">
-                    <div class="process-header" @click="toggleSearchProcess(msg.id)">
+                    <div
+                      class="process-header"
+                      @click="toggleSearchProcess(msg.id)"
+                    >
                       <div class="header-content">
                         <div class="process-icon">
                           <el-icon><Search /></el-icon>
                         </div>
-                        <span class="process-title">搜索过程</span>
+                        <span class="process-title">{{
+                          $t("chat.searchProcess")
+                        }}</span>
                         <el-icon :class="{ 'collapse-icon': true }">
-                          <component :is="isSearchProcessCollapsed(msg.id) ? ArrowDown : ArrowUp" />
+                          <component
+                            :is="
+                              isSearchProcessCollapsed(msg.id)
+                                ? ArrowDown
+                                : ArrowUp
+                            "
+                          />
                         </el-icon>
                       </div>
                     </div>
-                    
+
                     <div class="process-steps">
-                      <div 
-                        v-for="(step, stepIndex) in getVisibleSteps(msg.thinkingSteps, msg.id)"
+                      <div
+                        v-for="(step, stepIndex) in getVisibleSteps(
+                          msg.thinkingSteps,
+                          msg.id
+                        )"
                         :key="stepIndex"
                         class="process-step"
-                        :class="{'completed': step.completed, 'active': step.completed && stepIndex === msg.thinkingSteps.length - 1, 'in-progress': !step.completed}"
+                        :class="{
+                          completed: step.completed,
+                          active:
+                            step.completed &&
+                            stepIndex === msg.thinkingSteps.length - 1,
+                          'in-progress': !step.completed,
+                        }"
                         :id="`step-${msg.id}-${stepIndex}`"
                       >
                         <div class="timeline">
                           <div class="timeline-line"></div>
-                          <div class="step-indicator" :class="{'completed': step.completed, 'loading': !step.completed}">
-                            <div v-if="!step.completed" class="step-loading-spinner"></div>
+                          <div
+                            class="step-indicator"
+                            :class="{
+                              completed: step.completed,
+                              loading: !step.completed,
+                            }"
+                          >
+                            <div
+                              v-if="!step.completed"
+                              class="step-loading-spinner"
+                            ></div>
                             <el-icon v-else><Check /></el-icon>
                           </div>
                         </div>
                         <div class="step-content">
                           <div class="step-title">
                             {{ step.title }}
-                            <span v-if="!step.completed" class="step-loading-text">处理中...</span>
+                            <span
+                              v-if="!step.completed"
+                              class="step-loading-text"
+                              >{{ $t("chat.processing") }}</span
+                            >
                           </div>
                           <div v-if="step.description" class="step-desc">
                             {{ step.description }}
@@ -133,36 +184,84 @@
                           <div v-if="step.details" class="step-details">
                             <div v-html="getStepMarkdownContent(step)"></div>
                           </div>
-                          <div v-if="step.results && step.results.length > 0" class="step-results">
+                          <div
+                            v-if="step.results && step.results.length > 0"
+                            class="step-results"
+                          >
                             <div class="step-results-header">搜索结果:</div>
-                            <div v-for="(result, resultIndex) in step.results.slice(0, 3)" :key="resultIndex" class="step-result-item">
-                              <a :href="result.link" target="_blank" rel="noopener noreferrer">{{ result.title }}</a>
+                            <div
+                              v-for="(
+                                result, resultIndex
+                              ) in step.results.slice(0, 3)"
+                              :key="resultIndex"
+                              class="step-result-item"
+                            >
+                              <a
+                                :href="result.link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{{ result.title }}</a
+                              >
                               <div class="step-result-snippet-wrapper">
-                                <p class="step-result-snippet" :class="{ 'collapsed': !expandedSnippets[`${step.type}-${resultIndex}`] }">
+                                <p
+                                  class="step-result-snippet"
+                                  :class="{
+                                    collapsed:
+                                      !expandedSnippets[
+                                        `${step.type}-${resultIndex}`
+                                      ],
+                                  }"
+                                >
                                   {{ result.snippet }}
-                                  <button 
-                                    v-if="shouldShowExpandButton(result.snippet)"
-                                    class="expand-snippet-btn inline-btn" 
-                                    @click.stop="toggleSnippet(`${step.type}-${resultIndex}`)"
+                                  <button
+                                    v-if="
+                                      shouldShowExpandButton(result.snippet)
+                                    "
+                                    class="expand-snippet-btn inline-btn"
+                                    @click.stop="
+                                      toggleSnippet(
+                                        `${step.type}-${resultIndex}`
+                                      )
+                                    "
                                   >
-                                    {{ expandedSnippets[`${step.type}-${resultIndex}`] ? '[收起]' : '[展开]' }}
+                                    {{
+                                      expandedSnippets[
+                                        `${step.type}-${resultIndex}`
+                                      ]
+                                        ? "[收起]"
+                                        : "[展开]"
+                                    }}
                                   </button>
                                 </p>
                               </div>
                             </div>
-                            <div v-if="step.results.length > 3" class="step-results-more">
+                            <div
+                              v-if="step.results.length > 3"
+                              class="step-results-more"
+                            >
                               +{{ step.results.length - 3 }} 更多结果...
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div v-if="isSearchProcessPartiallyCollapsed(msg.id) && msg.thinkingSteps.length > 2" class="collapsed-indicator">
+                      <div
+                        v-if="
+                          isSearchProcessPartiallyCollapsed(msg.id) &&
+                          msg.thinkingSteps.length > 2
+                        "
+                        class="collapsed-indicator"
+                      >
                         <div class="collapsed-dots">
                           <span></span>
                           <span></span>
                           <span></span>
                         </div>
-                        <div class="collapsed-text" @click="toggleSearchProcess(msg.id)">点击展开更多步骤</div>
+                        <div
+                          class="collapsed-text"
+                          @click="toggleSearchProcess(msg.id)"
+                        >
+                          点击展开更多步骤
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -175,9 +274,17 @@
                     <span>搜索结果</span>
                   </div>
                   <div class="results-content">
-                    <div v-for="(result, index) in msg.results" :key="index" class="result-item">
+                    <div
+                      v-for="(result, index) in msg.results"
+                      :key="index"
+                      class="result-item"
+                    >
                       <h3 class="result-title">
-                        <a :href="result.link" target="_blank" rel="noopener noreferrer">
+                        <a
+                          :href="result.link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           {{ result.title }}
                         </a>
                       </h3>
@@ -187,34 +294,61 @@
                 </div>
 
                 <!-- 分析报告 -->
-                <div v-if="msg.summary" class="analysis-report" :id="`report-${msg.id}`">
-                  <div class="report-header" @click="(e) => toggleReport(msg.id, e)">
+                <div
+                  v-if="msg.summary"
+                  class="analysis-report"
+                  :id="`report-${msg.id}`"
+                >
+                  <div
+                    class="report-header"
+                    @click="(e) => toggleReport(msg.id, e)"
+                  >
                     <div class="header-content">
                       <div class="report-icon">
                         <el-icon><Document /></el-icon>
                       </div>
                       <span class="report-title">搜索分析报告</span>
-                      <el-icon :class="[isReportCollapsed(msg.id) ? 'collapse-icon' : 'collapse-icon']">
-                        <component :is="isReportCollapsed(msg.id) ? ArrowDown : ArrowUp" />
+                      <el-icon
+                        :class="[
+                          isReportCollapsed(msg.id)
+                            ? 'collapse-icon'
+                            : 'collapse-icon',
+                        ]"
+                      >
+                        <component
+                          :is="isReportCollapsed(msg.id) ? ArrowDown : ArrowUp"
+                        />
                       </el-icon>
                     </div>
                   </div>
-                  <div v-show="!isReportCollapsed(msg.id)" class="report-content markdown-body" v-html="getMarkdownContent(msg)"></div>
-                  
+                  <div
+                    v-show="!isReportCollapsed(msg.id)"
+                    class="report-content markdown-body"
+                    v-html="getMarkdownContent(msg)"
+                  ></div>
+
                   <!-- 报告底部操作按钮 -->
-                  <div class="report-footer" v-show="!isReportCollapsed(msg.id)">
+                  <div
+                    class="report-footer"
+                    v-show="!isReportCollapsed(msg.id)"
+                  >
                     <div class="report-decoration">
                       <el-icon><DocumentChecked /></el-icon>
                     </div>
-                    <div class="report-tip">
-                      AI分析报告已生成完毕
-                    </div>
+                    <div class="report-tip">AI分析报告已生成完毕</div>
                     <div class="report-actions">
-                      <button v-if="msg.documentId" class="action-btn download-btn" @click="downloadReport(msg.documentId)">
+                      <button
+                        v-if="msg.documentId"
+                        class="action-btn download-btn"
+                        @click="downloadReport(msg.documentId)"
+                      >
                         <el-icon><Download /></el-icon>
                         <span>下载报告</span>
                       </button>
-                      <button class="action-btn copy-btn" @click="copyReportContent(msg.summary)">
+                      <button
+                        class="action-btn copy-btn"
+                        @click="copyReportContent(msg.summary)"
+                      >
                         <el-icon><DocumentCopy /></el-icon>
                         <span>复制内容</span>
                       </button>
@@ -223,7 +357,10 @@
                 </div>
 
                 <!-- 错误信息 -->
-                <div v-if="msg.content && msg.content.includes('错误')" class="error-message">
+                <div
+                  v-if="msg.content && msg.content.includes('错误')"
+                  class="error-message"
+                >
                   {{ msg.content }}
                 </div>
               </div>
@@ -234,20 +371,30 @@
         <!-- 输入区域 -->
         <div class="input-area">
           <div class="input-selectors">
-            <div class="model-selector" @click.stop="modelDropdownVisible = !modelDropdownVisible">
-              <span class="selector-label">AI模型</span>
+            <div
+              class="model-selector"
+              @click.stop="modelDropdownVisible = !modelDropdownVisible"
+            >
+              <span class="selector-label">{{ $t("chat.aiModel") }}</span>
               <div class="selector-value">
-                {{ selectedModel === 'gpt-4' ? 'GPT-4' : selectedModel }}
-                <i class="dropdown-icon" :class="{ 'active': modelDropdownVisible }"></i>
+                {{ selectedModel === "gpt-4" ? "GPT-4" : selectedModel }}
+                <i
+                  class="dropdown-icon"
+                  :class="{ active: modelDropdownVisible }"
+                ></i>
               </div>
-              
+
               <!-- 模型下拉菜单 -->
-              <div v-if="modelDropdownVisible" class="dropdown-menu" @click.stop>
-                <div 
-                  v-for="model in availableModels" 
-                  :key="model.id" 
+              <div
+                v-if="modelDropdownVisible"
+                class="dropdown-menu"
+                @click.stop
+              >
+                <div
+                  v-for="model in availableModels"
+                  :key="model.id"
                   class="dropdown-item"
-                  :class="{ 'active': selectedModel === model.id }"
+                  :class="{ active: selectedModel === model.id }"
                   @click="selectModel(model.id)"
                 >
                   {{ model.name }}
@@ -255,65 +402,77 @@
               </div>
             </div>
 
-            <div class="search-selector" @click.stop="searchEngineDropdownVisible = !searchEngineDropdownVisible">
-              <span class="selector-label">搜索引擎</span>
+            <div
+              class="search-selector"
+              @click.stop="
+                searchEngineDropdownVisible = !searchEngineDropdownVisible
+              "
+            >
+              <span class="selector-label">{{ $t("chat.searchEngine") }}</span>
               <div class="selector-value">
                 {{ getSearchEngineName(selectedSearchEngine) }}
-                <i class="dropdown-icon" :class="{ 'active': searchEngineDropdownVisible }"></i>
+                <i
+                  class="dropdown-icon"
+                  :class="{ active: searchEngineDropdownVisible }"
+                ></i>
               </div>
-              
+
               <!-- 搜索引擎下拉菜单 -->
-              <div v-if="searchEngineDropdownVisible" class="dropdown-menu" @click.stop>
-                <div 
-                  class="dropdown-item" 
-                  :class="{ 'active': selectedSearchEngine === 'tavily' }"
+              <div
+                v-if="searchEngineDropdownVisible"
+                class="dropdown-menu"
+                @click.stop
+              >
+                <div
+                  class="dropdown-item"
+                  :class="{ active: selectedSearchEngine === 'tavily' }"
                   @click="selectSearchEngine('tavily')"
                 >
-                  Tavily AI搜索
+                  {{ $t("chat.tavilySearch") }}
                 </div>
-                <div 
-                  class="dropdown-item" 
-                  :class="{ 'active': selectedSearchEngine === 'default-search' }"
+                <div
+                  class="dropdown-item"
+                  :class="{ active: selectedSearchEngine === 'default-search' }"
                   @click="selectSearchEngine('default-search')"
                 >
-                  默认搜索
+                  {{ $t("chat.defaultSearch") }}
                 </div>
-                <div 
-                  class="dropdown-item" 
-                  :class="{ 'active': selectedSearchEngine === 'google' }"
+                <div
+                  class="dropdown-item"
+                  :class="{ active: selectedSearchEngine === 'google' }"
                   @click="selectSearchEngine('google')"
                 >
-                  Google
+                  {{ $t("chat.googleSearch") }}
                 </div>
-                <div 
-                  class="dropdown-item" 
-                  :class="{ 'active': selectedSearchEngine === 'bing' }"
+                <div
+                  class="dropdown-item"
+                  :class="{ active: selectedSearchEngine === 'bing' }"
                   @click="selectSearchEngine('bing')"
                 >
-                  Bing
+                  {{ $t("chat.bingSearch") }}
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="input-box">
             <div class="textarea-container">
               <el-input
                 v-model="messageInput"
-                type="textarea"
-                :rows="4"
+                :placeholder="$t('chat.inputPlaceholder')"
+                @keyup.enter="sendMessage"
+                :disabled="isLoading"
                 class="message-input"
-                placeholder="请输入搜索关键词，开启智能旅程"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 4 }"
                 resize="none"
-                @keydown.enter.exact.prevent="sendMessage"
-                @keydown.shift.enter.prevent="messageInput += '\n'"
               />
-              <el-button 
-                class="send-button"
-                :disabled="!messageInput.trim()"
+              <el-button
                 @click="sendMessage"
+                :disabled="!messageInput.trim() || isLoading"
+                class="send-button"
               >
-                发送
+                {{ $t("chat.send") }}
               </el-button>
             </div>
           </div>
@@ -324,121 +483,125 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-import type { Ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { Marked } from 'marked'
-import axios from 'axios'
-import { ElMessage } from 'element-plus'
-import 'highlight.js/styles/github.css'
-import 'github-markdown-css/github-markdown.css'
-import { 
-  Document, 
-  DocumentChecked, 
-  Download, 
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import type { Ref } from "vue";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { Marked } from "marked";
+import axios from "axios";
+import { ElMessage } from "element-plus";
+import "highlight.js/styles/github.css";
+import "github-markdown-css/github-markdown.css";
+import {
+  Document,
+  DocumentChecked,
+  Download,
   DocumentCopy,
   ArrowDown,
   ArrowUp,
   Search,
   Delete,
   Check,
-  InfoFilled
-} from '@element-plus/icons-vue'
+  InfoFilled,
+} from "@element-plus/icons-vue";
 
 interface Conversation {
-  id: string
-  title: string
-  lastUpdateTime: string
-  messages: Message[]
+  id: string;
+  title: string;
+  lastUpdateTime: string;
+  messages: Message[];
 }
 
 interface Message {
-  id: string
-  type: 'user' | 'system'
-  content: string
-  time: string
-  loading: boolean
+  id: string;
+  type: "user" | "system";
+  content: string;
+  time: string;
+  loading: boolean;
   thinkingSteps: {
-    type: string
-    title: string
-    description: string
-    details?: string
-    results?: SearchResult[]
-    completed: boolean
-  }[]
-  summary: string
-  documentId: string | null
-  intent?: string
-  results?: SearchResult[]
+    type: string;
+    title: string;
+    description: string;
+    details?: string;
+    results?: SearchResult[];
+    completed: boolean;
+  }[];
+  summary: string;
+  documentId: string | null;
+  intent?: string;
+  results?: SearchResult[];
 }
 
 interface ThinkingStep {
-  type: string
-  title: string
-  description: string
-  details?: string
-  results?: SearchResult[]
-  completed: boolean
+  type: string;
+  title: string;
+  description: string;
+  details?: string;
+  results?: SearchResult[];
+  completed: boolean;
 }
 
 interface AIModel {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 interface SearchResult {
-  title: string
-  link: string
-  snippet: string
+  title: string;
+  link: string;
+  snippet: string;
 }
 
 // 路由
-const router = useRouter()
+const router = useRouter();
+
+// i18n
+const { t } = useI18n();
 
 // 状态
-const username = ref(localStorage.getItem('username') || 'User')
-const conversations: Ref<Conversation[]> = ref([])
-const currentConversationId = ref('')
-const messages: Ref<Message[]> = ref([])
-const messageInput = ref('')
-const selectedModel = ref('deepseek-v3-250324')
-const selectedSearchEngine = ref('tavily')
-const renderedMarkdown = ref<{ [key: string]: string }>({})
-const modelDropdownVisible = ref(false)
-const searchEngineDropdownVisible = ref(false)
+const username = ref(localStorage.getItem("username") || "User");
+const conversations: Ref<Conversation[]> = ref([]);
+const currentConversationId = ref("");
+const messages: Ref<Message[]> = ref([]);
+const messageInput = ref("");
+const selectedModel = ref("deepseek-v3-250324");
+const selectedSearchEngine = ref("tavily");
+const renderedMarkdown = ref<{ [key: string]: string }>({});
+const modelDropdownVisible = ref(false);
+const searchEngineDropdownVisible = ref(false);
 const availableModels: Ref<AIModel[]> = ref([
-  { id: 'gpt-4', name: 'GPT-4' },
-  { id: 'gpt-3.5-turbo', name: 'GPT-3.5' },
-  { id: 'deepseek', name: 'DeepSeek V3' }
-])
+  { id: "gpt-4", name: "GPT-4" },
+  { id: "gpt-3.5-turbo", name: "GPT-3.5" },
+  { id: "deepseek", name: "DeepSeek V3" },
+]);
 
 // 折叠相关状态
-const collapsedSearchProcesses = ref<Record<string, boolean>>({})
-const collapsedReports = ref<Record<string, boolean>>({})
-const expandedSnippets = ref<Record<string, boolean>>({})
+const collapsedSearchProcesses = ref<Record<string, boolean>>({});
+const collapsedReports = ref<Record<string, boolean>>({});
+const expandedSnippets = ref<Record<string, boolean>>({});
 
 // 创建 marked 实例
 const marked = new Marked({
   breaks: true,
   gfm: true,
-})
+});
 
 // API请求
 const fetchAvailableModels = async () => {
   try {
-    const token = localStorage.getItem('token')
-    if (!token) return
-    
-    const response = await axios.get('/api/models', {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const response = await axios.get("/api/models", {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     if (response.data && response.data.models) {
-      availableModels.value = response.data.models
+      availableModels.value = response.data.models;
     }
-    
+
     // // 使用模拟数据
     // availableModels.value = [
     //   { id: 'gpt-4', name: 'GPT-4' },
@@ -446,441 +609,325 @@ const fetchAvailableModels = async () => {
     //   { id: 'claude-3', name: 'Claude 3' }
     // ]
   } catch (error) {
-    console.error('获取AI模型列表失败:', error)
+    console.error("获取AI模型列表失败:", error);
   }
-}
+};
 
 // 选择模型
 const selectModel = (modelId: string) => {
-  selectedModel.value = modelId
-  modelDropdownVisible.value = false
-}
+  selectedModel.value = modelId;
+  modelDropdownVisible.value = false;
+};
 
 // 选择搜索引擎
 const selectSearchEngine = (engineId: string) => {
-  selectedSearchEngine.value = engineId
-  searchEngineDropdownVisible.value = false
-}
+  selectedSearchEngine.value = engineId;
+  searchEngineDropdownVisible.value = false;
+};
 
 // 方法
 const createNewConversation = () => {
-  const newId = `conv-${Date.now()}`
+  const newId = `conv-${Date.now()}`;
   const newConversation: Conversation = {
     id: newId,
     title: `新聊天 ${new Date().toLocaleString()}`,
     lastUpdateTime: new Date().toISOString(),
-    messages: []
-  }
-  
-  conversations.value.push(newConversation)
-  currentConversationId.value = newId
-  messages.value = []
-}
+    messages: [],
+  };
+
+  conversations.value.push(newConversation);
+  currentConversationId.value = newId;
+  messages.value = [];
+};
 
 const switchConversation = (id: string) => {
-  currentConversationId.value = id
-  const conversation = conversations.value.find(c => c.id === id)
+  currentConversationId.value = id;
+  const conversation = conversations.value.find((c) => c.id === id);
   if (conversation) {
-    messages.value = conversation.messages
+    messages.value = conversation.messages;
   }
-}
+};
 
 const deleteConversation = (id: string) => {
-  const index = conversations.value.findIndex(c => c.id === id)
+  const index = conversations.value.findIndex((c) => c.id === id);
   if (index > -1) {
-    conversations.value.splice(index, 1)
+    conversations.value.splice(index, 1);
     if (id === currentConversationId.value) {
       if (conversations.value.length > 0) {
-        switchConversation(conversations.value[0].id)
+        switchConversation(conversations.value[0].id);
       } else {
-        createNewConversation()
+        createNewConversation();
       }
     }
   }
-}
+};
 
 const formatTime = (time: string) => {
-  const date = new Date(time)
-  return date.toLocaleTimeString('zh-CN', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  })
-}
+  const date = new Date(time);
+  return date.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const handleLogout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('username')
-  router.push('/login')
-}
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+  router.push("/login");
+};
+
+const goToProfile = () => {
+  router.push("/profile");
+};
 
 const sendMessage = async () => {
-  if (!messageInput.value.trim()) return
-  
+  if (!messageInput.value.trim()) return;
+
   // 创建用户消息
   const userMessage: Message = {
     id: `msg-${Date.now()}`,
-    type: 'user' as const,
+    type: "user" as const,
     content: messageInput.value,
     time: formatTime(new Date().toISOString()),
     loading: false,
     thinkingSteps: [],
-    summary: '',
-    documentId: null
-  }
-  
-  messages.value.push(userMessage)
-  
+    summary: "",
+    documentId: null,
+  };
+
+  messages.value.push(userMessage);
+
   // 创建系统响应消息
   const systemMessage = {
     id: `msg-${Date.now()}-system`,
-    type: 'system' as const,
-    content: '',
+    type: "system" as const,
+    content: "",
     time: formatTime(new Date().toISOString()),
     loading: true,
     thinkingSteps: [],
-    summary: '',
+    summary: "",
     documentId: null,
-    intent: '',
-    results: [] as SearchResult[]
-  }
-  
-  messages.value.push(systemMessage)
-  messageInput.value = ''
-  
+    intent: "",
+    results: [] as SearchResult[],
+  };
+
+  messages.value.push(systemMessage);
+  messageInput.value = "";
+
   // 及时更新会话记录
-  updateConversation()
-  
+  updateConversation();
+
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.push('/login')
-      return
+      router.push("/login");
+      return;
     }
 
     // 发送请求到后端
-    const response = await fetch('/api/stream-search', {
-      method: 'POST',
+    const response = await fetch("/api/stream-search", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         query: userMessage.content,
         model: selectedModel.value,
-        searchEngine: selectedSearchEngine.value
-      })
-    })
+        searchEngine: selectedSearchEngine.value,
+      }),
+    });
 
     if (!response.ok) {
-      throw new Error('搜索请求失败')
+      throw new Error("搜索请求失败");
     }
 
-    // 处理流式响应
-    const reader = response.body?.getReader()
-    if (!reader) {
-      throw new Error('无法读取响应流')
-    }
-
-    const decoder = new TextDecoder()
-    let buffer = ''
-
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-
-      buffer += decoder.decode(value, { stream: true })
-      const lines = buffer.split('\n')
-      buffer = lines.pop() || ''
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          try {
-            const data = JSON.parse(line.slice(6))
-            console.log('接收到的事件数据:', data)
-            switch (data.eventType) {
-              case 'thinking':
-                if (data.step) {
-                  // 更新或添加思考步骤
-                  const stepIndex = systemMessage.thinkingSteps.findIndex(s => s.type === data.step.type)
-                  let newStepAdded = false;
-                  
-                  if (stepIndex >= 0) {
-                    systemMessage.thinkingSteps[stepIndex] = data.step
-                  } else {
-                    systemMessage.thinkingSteps.push(data.step)
-                    newStepAdded = true;
-                  }
-                  
-                  // 实时更新界面
-                  messages.value = [...messages.value]
-                  
-                  // 如果包含搜索结果，也更新结果显示
-                  if (data.step.results && data.step.results.length > 0) {
-                    systemMessage.results = data.step.results
-                  }
-                  
-                  // 等待DOM更新后滚动到当前步骤
-                  setTimeout(() => {
-                    const stepElements = document.querySelectorAll(`.process-step${newStepAdded ? ':last-child' : '.in-progress'}`)
-                    if (stepElements.length > 0) {
-                      const activeStep = newStepAdded ? stepElements[stepElements.length - 1] : stepElements[0]
-                      activeStep.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                    }
-                  }, 100)
-                }
-                break
-
-              case 'result':
-                if (data.results) {
-                  // 更新搜索结果
-                  systemMessage.results = data.results
-                  console.log('更新搜索结果:', data.results)
-                }
-                if (data.intent) {
-                  systemMessage.intent = data.intent
-                }
-                break
-
-              case 'document':
-                if (data.documentId) {
-                  systemMessage.documentId = data.documentId
-                }
-                break
-
-              case 'complete':
-                systemMessage.loading = false
-                if (data.summary) {
-                  systemMessage.summary = data.summary
-                  // 调用渲染函数
-                  await renderMarkdown(data.summary, systemMessage.id)
-                  // 报告生成后部分折叠搜索过程
-                  collapsedSearchProcesses.value[systemMessage.id] = true
-                  
-                  // 等待 DOM 更新后滚动到报告位置
-                  setTimeout(() => {
-                    const reportElement = document.getElementById(`report-${systemMessage.id}`)
-                    if (reportElement) {
-                      reportElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    }
-                  }, 100)
-                }
-                if (data.documentId) {
-                  systemMessage.documentId = data.documentId
-                }
-                
-                // 通知 Vue 更新渲染
-                messages.value = [...messages.value]
-                break
-
-              case 'error':
-                systemMessage.loading = false
-                systemMessage.content = `搜索过程中发生错误: ${data.error}`
-                break
-            }
-          } catch (e) {
-            console.error('解析响应数据失败:', e)
-          }
-        }
+    // 获取文件名
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = "search-report.md";
+    if (contentDisposition) {
+      const matches = /filename="(.+)"/.exec(contentDisposition);
+      if (matches && matches[1]) {
+        filename = matches[1];
       }
     }
 
-    // 确保所有数据都被处理
-    if (buffer) {
-      try {
-        const data = JSON.parse(buffer.slice(6))
-        if (data.eventType === 'complete') {
-          systemMessage.loading = false
-          if (data.summary) {
-            systemMessage.summary = data.summary
-            // 调用渲染函数
-            await renderMarkdown(data.summary, systemMessage.id)
-            // 报告生成后部分折叠搜索过程
-            collapsedSearchProcesses.value[systemMessage.id] = true
-            
-            // 等待 DOM 更新后滚动到报告位置
-            setTimeout(() => {
-              const reportElement = document.getElementById(`report-${systemMessage.id}`)
-              if (reportElement) {
-                reportElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }
-            }, 100)
-          }
-          if (data.documentId) {
-            systemMessage.documentId = data.documentId
-          }
-        }
-      } catch (e) {
-        console.error('解析最后的响应数据失败:', e)
-      }
-    }
-
-    // 确保在捕获完所有数据后更新 loading 状态
-    if (systemMessage.loading) {
-      systemMessage.loading = false
-    }
-
-    // 通知 Vue 更新渲染
-    messages.value = [...messages.value]
-
-    // 处理完成后再次更新会话记录
-    updateConversation()
-
+    // 下载文件
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   } catch (error) {
-    console.error('发送消息失败:', error)
-    systemMessage.loading = false
-    systemMessage.content = '发送消息失败，请重试'
-    
+    console.error("发送消息失败:", error);
+    systemMessage.loading = false;
+    systemMessage.content = "发送消息失败，请重试";
+
     // 即使出错也要更新会话
-    updateConversation()
+    updateConversation();
   }
-}
+};
 
 // 修改渲染Markdown的函数，使用新的API
 const renderMarkdown = async (text: string, key: string): Promise<void> => {
   if (!text) {
-    renderedMarkdown.value[key] = '';
+    renderedMarkdown.value[key] = "";
     return;
   }
-  
+
   try {
-    console.log('尝试渲染Markdown:', key.slice(0, 8));
+    console.log("尝试渲染Markdown:", key.slice(0, 8));
     // 使用 marked.parse 异步渲染
     const rendered = await marked.parse(text);
     renderedMarkdown.value[key] = rendered;
   } catch (error) {
-    console.error('Markdown解析错误:', error);
+    console.error("Markdown解析错误:", error);
     // 如果解析失败，至少显示纯文本
-    renderedMarkdown.value[key] = `<div style="white-space: pre-wrap;">${text}</div>`;
+    renderedMarkdown.value[
+      key
+    ] = `<div style="white-space: pre-wrap;">${text}</div>`;
   }
 };
 
 // 添加下载报告方法
 const downloadReport = async (documentId: string) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.push('/login')
-      return
+      router.push("/login");
+      return;
     }
 
     const response = await fetch(`/api/documents/${documentId}?download=true`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
-      throw new Error('下载报告失败')
+      throw new Error("下载报告失败");
     }
 
     // 获取文件名
-    const contentDisposition = response.headers.get('Content-Disposition')
-    let filename = 'search-report.md'
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = "search-report.md";
     if (contentDisposition) {
-      const matches = /filename="(.+)"/.exec(contentDisposition)
+      const matches = /filename="(.+)"/.exec(contentDisposition);
       if (matches && matches[1]) {
-        filename = matches[1]
+        filename = matches[1];
       }
     }
 
     // 下载文件
-    const blob = await response.blob()
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    window.URL.revokeObjectURL(url)
-    document.body.removeChild(a)
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   } catch (error) {
-    console.error('下载报告失败:', error)
-    ElMessage.error('下载报告失败，请重试')
+    console.error("下载报告失败:", error);
+    ElMessage.error("下载报告失败，请重试");
   }
-}
+};
 
 // 添加获取搜索引擎名称的方法
 const getSearchEngineName = (engineId: string): string => {
-  switch(engineId) {
-    case 'tavily':
-      return 'Tavily AI搜索';
-    case 'default-search':
-      return '默认搜索';
-    case 'google':
-      return 'Google';
-    case 'bing':
-      return 'Bing';
+  switch (engineId) {
+    case "tavily":
+      return t("chat.tavilySearch");
+    case "default-search":
+      return t("chat.defaultSearch");
+    case "google":
+      return t("chat.googleSearch");
+    case "bing":
+      return t("chat.bingSearch");
     default:
       return engineId;
   }
-}
+};
 
 // 添加会话更新函数
 const updateConversation = () => {
   if (currentConversationId.value) {
-    const conversation = conversations.value.find(c => c.id === currentConversationId.value)
+    const conversation = conversations.value.find(
+      (c) => c.id === currentConversationId.value
+    );
     if (conversation) {
-      conversation.messages = [...messages.value]
-      conversation.lastUpdateTime = new Date().toISOString()
-      
+      conversation.messages = [...messages.value];
+      conversation.lastUpdateTime = new Date().toISOString();
+
       // 如果是首条消息，更新会话标题
-      if (conversation.title.startsWith('新聊天') && messages.value.length > 0) {
-        const firstUserMsg = messages.value.find(m => m.type === 'user')
+      if (
+        conversation.title.startsWith("新聊天") &&
+        messages.value.length > 0
+      ) {
+        const firstUserMsg = messages.value.find((m) => m.type === "user");
         if (firstUserMsg) {
-          conversation.title = firstUserMsg.content.substring(0, 20) + (firstUserMsg.content.length > 20 ? '...' : '')
+          conversation.title =
+            firstUserMsg.content.substring(0, 20) +
+            (firstUserMsg.content.length > 20 ? "..." : "");
         }
       }
-      
+
       // 保存到本地存储
-      saveConversations()
+      saveConversations();
     }
   }
-}
+};
 
 // 添加保存和加载会话的函数
 const saveConversations = () => {
   try {
-    localStorage.setItem('conversations', JSON.stringify(conversations.value))
+    localStorage.setItem("conversations", JSON.stringify(conversations.value));
   } catch (e) {
-    console.error('保存会话失败:', e)
+    console.error("保存会话失败:", e);
   }
-}
+};
 
 const loadConversations = () => {
   try {
-    const savedConversations = localStorage.getItem('conversations')
+    const savedConversations = localStorage.getItem("conversations");
     if (savedConversations) {
-      conversations.value = JSON.parse(savedConversations)
+      conversations.value = JSON.parse(savedConversations);
     }
   } catch (e) {
-    console.error('加载会话失败:', e)
+    console.error("加载会话失败:", e);
   }
-}
+};
 
 // 计算已完成的步骤数量
 const computeCompletedSteps = (steps: ThinkingStep[]) => {
-  if (!steps || steps.length === 0) return '0/0';
-  const completed = steps.filter(step => step.completed).length;
+  if (!steps || steps.length === 0) return "0/0";
+  const completed = steps.filter((step) => step.completed).length;
   return `${completed}/${steps.length}`;
-}
+};
 
 // 修改折叠逻辑
 const isSearchProcessCollapsed = (msgId: string) => {
   return collapsedSearchProcesses.value[msgId] === true;
-}
+};
 
 const isSearchProcessPartiallyCollapsed = (msgId: string) => {
   return collapsedSearchProcesses.value[msgId] === true;
-}
+};
 
 const toggleSearchProcess = (msgId: string) => {
-  collapsedSearchProcesses.value[msgId] = !collapsedSearchProcesses.value[msgId];
-  
+  collapsedSearchProcesses.value[msgId] =
+    !collapsedSearchProcesses.value[msgId];
+
   // 展开时，滚动到最新的步骤
   if (!collapsedSearchProcesses.value[msgId]) {
     scrollToLatestStep(msgId);
   }
-}
+};
 
 // 获取可见的步骤
 const getVisibleSteps = (steps: ThinkingStep[], msgId: string) => {
@@ -890,69 +937,81 @@ const getVisibleSteps = (steps: ThinkingStep[], msgId: string) => {
   }
   // 当折叠时，只显示前两个步骤
   return steps.slice(0, 2);
-}
+};
 
 // 添加滚动到最新步骤的辅助函数
 const scrollToLatestStep = (messageId: string) => {
   setTimeout(() => {
-    const message = messages.value.find(m => m.id === messageId);
-    if (!message || !message.thinkingSteps || message.thinkingSteps.length === 0) return;
-    
+    const message = messages.value.find((m) => m.id === messageId);
+    if (
+      !message ||
+      !message.thinkingSteps ||
+      message.thinkingSteps.length === 0
+    )
+      return;
+
     // 查找进行中的步骤
-    const inProgressIndex = message.thinkingSteps.findIndex(step => !step.completed);
-    
+    const inProgressIndex = message.thinkingSteps.findIndex(
+      (step) => !step.completed
+    );
+
     if (inProgressIndex >= 0) {
       // 如果有进行中的步骤，滚动到该步骤
-      const inProgressStep = document.querySelector(`#step-${messageId}-${inProgressIndex}`);
+      const inProgressStep = document.querySelector(
+        `#step-${messageId}-${inProgressIndex}`
+      );
       if (inProgressStep) {
-        inProgressStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        inProgressStep.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     } else {
       // 如果所有步骤都已完成，滚动到最后一个步骤
       const lastStepIndex = message.thinkingSteps.length - 1;
-      const lastStep = document.querySelector(`#step-${messageId}-${lastStepIndex}`);
+      const lastStep = document.querySelector(
+        `#step-${messageId}-${lastStepIndex}`
+      );
       if (lastStep) {
-        lastStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        lastStep.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
   }, 100);
-}
+};
 
 // 添加报告折叠功能
 const isReportCollapsed = (msgId: string) => {
-  return collapsedReports.value[msgId] === true
-}
+  return collapsedReports.value[msgId] === true;
+};
 
 const toggleReport = (msgId: string, e?: Event) => {
   // 如果报告点击的是下载按钮，不触发折叠
-  if (e && (e.target as HTMLElement).closest('.download-btn')) {
-    return
+  if (e && (e.target as HTMLElement).closest(".download-btn")) {
+    return;
   }
-  collapsedReports.value[msgId] = !collapsedReports.value[msgId]
-}
+  collapsedReports.value[msgId] = !collapsedReports.value[msgId];
+};
 
 // 复制报告内容
 const copyReportContent = (content: string) => {
   if (!content) return;
-  
-  navigator.clipboard.writeText(content)
+
+  navigator.clipboard
+    .writeText(content)
     .then(() => {
-      ElMessage.success('报告内容已复制到剪贴板');
+      ElMessage.success("报告内容已复制到剪贴板");
     })
     .catch((err) => {
-      console.error('复制失败:', err);
+      console.error("复制失败:", err);
       // 尝试备用复制方法
       try {
-        const tempElement = document.createElement('textarea');
+        const tempElement = document.createElement("textarea");
         tempElement.value = content;
         document.body.appendChild(tempElement);
         tempElement.select();
-        document.execCommand('copy');
+        document.execCommand("copy");
         document.body.removeChild(tempElement);
-        ElMessage.success('报告内容已复制到剪贴板');
+        ElMessage.success("报告内容已复制到剪贴板");
       } catch (fallbackError) {
-        console.error('备用复制方法也失败:', fallbackError);
-        ElMessage.error('复制失败，请手动选择内容并复制');
+        console.error("备用复制方法也失败:", fallbackError);
+        ElMessage.error("复制失败，请手动选择内容并复制");
       }
     });
 };
@@ -963,29 +1022,33 @@ const getMarkdownContent = (msg: Message): string => {
   if (renderedMarkdown.value[msg.id]) {
     return renderedMarkdown.value[msg.id];
   }
-  
+
   // 如果尚未渲染，但有内容，则触发渲染
   if (msg.summary && !renderedMarkdown.value[msg.id]) {
     // 立即返回带有样式的原始内容，以防渲染尚未完成
     const safeContent = msg.summary
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/\n/g, '<br>');
-    
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>");
+
     // 异步触发渲染
     renderMarkdown(msg.summary, msg.id);
-    
+
     // 返回带有样式的文本
     return `<div style="white-space: pre-wrap;">${safeContent}</div>`;
   }
-  
-  return '';
+
+  return "";
 };
 
 // 预渲染所有报告内容
 const preRenderAllReports = () => {
-  messages.value.forEach(msg => {
-    if (msg.type === 'system' && msg.summary && !renderedMarkdown.value[msg.id]) {
+  messages.value.forEach((msg) => {
+    if (
+      msg.type === "system" &&
+      msg.summary &&
+      !renderedMarkdown.value[msg.id]
+    ) {
       renderMarkdown(msg.summary, msg.id);
     }
   });
@@ -993,42 +1056,49 @@ const preRenderAllReports = () => {
 
 // 获取步骤详情的Markdown内容
 const getStepMarkdownContent = (step: ThinkingStep): string => {
-  if (!step || !step.details) return '';
-  
+  if (!step || !step.details) return "";
+
   // 为每个步骤生成一个稳定的唯一键
-  const stepKey = `step-${step.type}-${step.title ? step.title.slice(0, 10) : ''}`;
-  
+  const stepKey = `step-${step.type}-${
+    step.title ? step.title.slice(0, 10) : ""
+  }`;
+
   // 如果已经渲染过，直接返回缓存的结果
   if (renderedMarkdown.value[stepKey]) {
     return renderedMarkdown.value[stepKey];
   }
-  
+
   // 否则触发异步渲染
   renderStepMarkdown(step, stepKey);
-  
+
   // 同时返回简单格式化的内容用于立即显示
   const safeContent = step.details
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '<br>');
-  
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+
   return `<div style="white-space: pre-wrap;">${safeContent}</div>`;
 };
 
 // 渲染步骤详情的Markdown
-const renderStepMarkdown = async (step: ThinkingStep, key: string): Promise<void> => {
+const renderStepMarkdown = async (
+  step: ThinkingStep,
+  key: string
+): Promise<void> => {
   if (!step.details) return;
-  
+
   try {
-    console.log('渲染步骤Markdown:', step.type);
+    console.log("渲染步骤Markdown:", step.type);
     // 使用 marked.parse 异步渲染
     const rendered = await marked.parse(step.details);
     renderedMarkdown.value[key] = rendered;
     // 强制更新视图
     messages.value = [...messages.value];
   } catch (error) {
-    console.error('步骤Markdown解析错误:', error);
-    renderedMarkdown.value[key] = `<div style="white-space: pre-wrap;">${step.details}</div>`;
+    console.error("步骤Markdown解析错误:", error);
+    renderedMarkdown.value[
+      key
+    ] = `<div style="white-space: pre-wrap;">${step.details}</div>`;
   }
 };
 
@@ -1036,46 +1106,49 @@ const renderStepMarkdown = async (step: ThinkingStep, key: string): Promise<void
 const shouldShowExpandButton = (snippet: string): boolean => {
   if (!snippet) return false;
   // 检查文本行数是否超过3行
-  return snippet.split('\n').length > 3 || snippet.length > 200;
-}
+  return snippet.split("\n").length > 3 || snippet.length > 200;
+};
 
 // 切换片段的展开/收起状态
 const toggleSnippet = (snippetId: string): void => {
   expandedSnippets.value[snippetId] = !expandedSnippets.value[snippetId];
-}
+};
 
 // 生命周期钩子
 onMounted(() => {
   // 加载保存的会话
-  loadConversations()
-  
+  loadConversations();
+
   // 确保创建新会话
   if (conversations.value.length === 0) {
-    createNewConversation()
+    createNewConversation();
   }
-  
+
   // 加载模型数据
-  fetchAvailableModels()
-  
+  fetchAvailableModels();
+
   // 点击外部关闭下拉菜单
   const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement
-    if (!target.closest('.model-selector') && !target.closest('.search-selector')) {
-      modelDropdownVisible.value = false
-      searchEngineDropdownVisible.value = false
+    const target = event.target as HTMLElement;
+    if (
+      !target.closest(".model-selector") &&
+      !target.closest(".search-selector")
+    ) {
+      modelDropdownVisible.value = false;
+      searchEngineDropdownVisible.value = false;
     }
-  }
-  
-  document.addEventListener('click', handleClickOutside)
-  
+  };
+
+  document.addEventListener("click", handleClickOutside);
+
   // 组件卸载时移除事件监听
   onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside)
-  })
-  
+    document.removeEventListener("click", handleClickOutside);
+  });
+
   // 预渲染所有报告
   preRenderAllReports();
-})
+});
 </script>
 
 <style scoped>
@@ -1092,7 +1165,7 @@ onMounted(() => {
 /* 侧边栏样式 */
 .sidebar {
   width: 260px;
-  background: #F7FBFE;
+  background: #f7fbfe;
   border-right: 1px solid #e6e8eb;
   display: flex;
   flex-direction: column;
@@ -1106,12 +1179,12 @@ onMounted(() => {
 .logo {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
 }
 
 .logo-img {
-  width: 190px;
-  height: 32px;
+  width: 120px;
 }
 
 .logo-text {
@@ -1323,8 +1396,13 @@ onMounted(() => {
 }
 
 @keyframes loading {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 /* 搜索过程样式优化 */
@@ -1337,6 +1415,7 @@ onMounted(() => {
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
 .process-header {
@@ -1492,7 +1571,7 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 
-.step-details :deep(ul), 
+.step-details :deep(ul),
 .step-details :deep(ol) {
   padding-left: 20px;
   margin-bottom: 10px;
@@ -1502,10 +1581,10 @@ onMounted(() => {
   margin-bottom: 5px;
 }
 
-.step-details :deep(h1), 
-.step-details :deep(h2), 
-.step-details :deep(h3), 
-.step-details :deep(h4), 
+.step-details :deep(h1),
+.step-details :deep(h2),
+.step-details :deep(h3),
+.step-details :deep(h4),
 .step-details :deep(h5) {
   margin-top: 16px;
   margin-bottom: 10px;
@@ -1530,9 +1609,9 @@ onMounted(() => {
 }
 
 .step-details :deep(blockquote) {
-  border-left: 4px solid #ddd;
-  padding-left: 10px;
+  padding: 0 16px;
   color: #666;
+  border-left: 4px solid #ddd;
   margin: 10px 0;
 }
 
@@ -1650,17 +1729,17 @@ onMounted(() => {
   margin-bottom: 12px;
 }
 
-.report-content :deep(ul), 
+.report-content :deep(ul),
 .report-content :deep(ol) {
   padding-left: 20px;
   margin-bottom: 12px;
 }
 
 .report-content :deep(blockquote) {
-  padding: 0 16px;
-  color: #666;
   border-left: 4px solid #ddd;
-  margin-bottom: 12px;
+  padding-left: 10px;
+  color: #666;
+  margin: 10px 0;
 }
 
 .report-content :deep(code) {
@@ -1811,7 +1890,8 @@ onMounted(() => {
   gap: 24px;
 }
 
-.model-selector, .search-selector {
+.model-selector,
+.search-selector {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -1825,7 +1905,8 @@ onMounted(() => {
   z-index: 10;
 }
 
-.model-selector:hover, .search-selector:hover {
+.model-selector:hover,
+.search-selector:hover {
   background-color: #edf0f5;
 }
 
@@ -1926,7 +2007,8 @@ onMounted(() => {
 .message-input :deep(.el-textarea__inner:focus) {
   border-color: #b6c6fa;
   background-color: #fafbfd;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03), 0 0 0 2px rgba(182, 198, 250, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03),
+    0 0 0 2px rgba(182, 198, 250, 0.2);
 }
 
 .send-button {
@@ -2075,8 +2157,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .process-step.in-progress .step-title {
@@ -2092,9 +2178,15 @@ onMounted(() => {
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* 确保 markdown-body 不会覆盖我们自定义的表格样式 */
@@ -2184,5 +2276,4 @@ onMounted(() => {
 .action-btn .el-icon {
   font-size: 18px;
 }
-
 </style>

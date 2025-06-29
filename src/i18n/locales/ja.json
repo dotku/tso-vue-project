@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "goBack": "戻る",
+    "confirm": "確認",
+    "delete": "削除",
+    "edit": "編集",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "warning": "警告",
+    "info": "情報"
+  },
+  "nav": {
+    "newChat": "新しいチャット",
+    "logout": "ログアウト",
+    "profile": "プロフィール",
+    "settings": "設定"
+  },
+  "chat": {
+    "placeholder": "メッセージを入力してください...",
+    "send": "送信",
+    "aiModel": "AIモデル",
+    "searchEngine": "検索エンジン",
+    "tavilySearch": "Tavily AI検索",
+    "defaultSearch": "デフォルト検索",
+    "googleSearch": "Google",
+    "bingSearch": "Bing",
+    "searching": "検索中...",
+    "searchComplete": "検索完了",
+    "downloadReport": "レポートをダウンロード",
+    "expandSnippet": "スニペットを展開",
+    "collapseSnippet": "スニペットを折りたたむ",
+    "copyToClipboard": "クリップボードにコピー",
+    "copied": "コピーしました！",
+    "newConversation": "新しい会話",
+    "conversationHistory": "会話履歴",
+    "searchAssistant": "検索アシスタント",
+    "searchProcess": "検索プロセス",
+    "processing": "処理中...",
+    "emptyStateText": "質問を入力して検索を開始してください",
+    "inputPlaceholder": "質問を入力してください..."
+  },
+  "profile": {
+    "title": "プロフィール設定",
+    "personalInfo": "個人情報",
+    "username": "ユーザー名",
+    "email": "メールアドレス",
+    "avatar": "アバター",
+    "language": "言語",
+    "theme": "テーマ",
+    "preferences": "設定",
+    "account": "アカウント設定",
+    "changePassword": "パスワード変更",
+    "deleteAccount": "アカウント削除",
+    "saveChanges": "変更を保存",
+    "languageChanged": "言語が正常に変更されました"
+  },
+  "languages": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "ja": "日本語"
+  },
+  "themes": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "auto": "自動"
+  },
+  "auth": {
+    "login": "ログイン",
+    "register": "登録",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "confirmPassword": "パスワード確認",
+    "email": "メールアドレス",
+    "forgotPassword": "パスワードを忘れましたか？",
+    "loginSuccess": "ログイン成功",
+    "registerSuccess": "登録成功",
+    "loginFailed": "ログイン失敗",
+    "registerFailed": "登録失敗"
+  }
+}

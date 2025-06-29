@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "goBack": "Zurück",
+    "confirm": "Bestätigen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "info": "Information"
+  },
+  "nav": {
+    "newChat": "Neuer Chat",
+    "logout": "Abmelden",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "chat": {
+    "placeholder": "Geben Sie Ihre Nachricht ein...",
+    "send": "Senden",
+    "aiModel": "KI-Modell",
+    "searchEngine": "Suchmaschine",
+    "tavilySearch": "Tavily AI-Suche",
+    "defaultSearch": "Standard-Suche",
+    "googleSearch": "Google",
+    "bingSearch": "Bing",
+    "searching": "Suche läuft...",
+    "searchComplete": "Suche Abgeschlossen",
+    "downloadReport": "Bericht Herunterladen",
+    "expandSnippet": "Snippet Erweitern",
+    "collapseSnippet": "Snippet Einklappen",
+    "copyToClipboard": "In Zwischenablage Kopieren",
+    "copied": "Kopiert!",
+    "newConversation": "Neue Unterhaltung",
+    "conversationHistory": "Gesprächsverlauf",
+    "searchAssistant": "Such-Assistent",
+    "searchProcess": "Suchvorgang",
+    "processing": "Verarbeitung...",
+    "emptyStateText": "Geben Sie eine Frage ein, um Ihre Suche zu beginnen",
+    "inputPlaceholder": "Geben Sie Ihre Frage ein..."
+  },
+  "profile": {
+    "title": "Profil-Einstellungen",
+    "personalInfo": "Persönliche Informationen",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "avatar": "Avatar",
+    "language": "Sprache",
+    "theme": "Design",
+    "preferences": "Einstellungen",
+    "account": "Konto-Einstellungen",
+    "changePassword": "Passwort ändern",
+    "deleteAccount": "Konto löschen",
+    "saveChanges": "Änderungen speichern",
+    "languageChanged": "Sprache erfolgreich geändert"
+  },
+  "languages": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "ja": "日本語"
+  },
+  "themes": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "auto": "Automatisch"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "email": "E-Mail",
+    "forgotPassword": "Passwort vergessen?",
+    "loginSuccess": "Anmeldung erfolgreich",
+    "registerSuccess": "Registrierung erfolgreich",
+    "loginFailed": "Anmeldung fehlgeschlagen",
+    "registerFailed": "Registrierung fehlgeschlagen"
+  }
+}
