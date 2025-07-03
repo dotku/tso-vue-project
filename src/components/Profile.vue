@@ -124,6 +124,7 @@ const availableLanguages = computed(() => ({
   fr: t("languages.fr"),
   de: t("languages.de"),
   ja: t("languages.ja"),
+  vi: t("languages.vi"),
 }));
 
 // Theme settings
