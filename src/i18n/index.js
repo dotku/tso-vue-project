@@ -6,6 +6,7 @@ import fr from "./locales/fr.json";
 import de from "./locales/de.json";
 import ja from "./locales/ja.json";
 import vi from "./locales/vi.json";
+import ms from "./locales/ms.json";
 
 const messages = {
   en,
@@ -15,6 +16,7 @@ const messages = {
   de,
   ja,
   vi,
+  ms,
 };
 
 // Get saved language from localStorage or default to browser language

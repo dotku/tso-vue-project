@@ -1,0 +1,89 @@
+{
+  "common": {
+    "save": "Simpan",
+    "cancel": "Batal",
+    "goBack": "Kembali",
+    "confirm": "Sahkan",
+    "delete": "Padam",
+    "edit": "Sunting",
+    "close": "Tutup",
+    "loading": "Memuat...",
+    "error": "Ralat",
+    "success": "Berjaya",
+    "warning": "Amaran",
+    "info": "Maklumat"
+  },
+  "nav": {
+    "newChat": "Perbualan Baharu",
+    "logout": "Log Keluar",
+    "profile": "Profil",
+    "settings": "Tetapan"
+  },
+  "chat": {
+    "searchAssistant": "Pembantu Carian",
+    "searchProcess": "Proses Carian",
+    "processing": "Memproses...",
+    "emptyStateText": "Masukkan soalan untuk memulakan perjalanan carian anda",
+    "inputPlaceholder": "Masukkan soalan anda...",
+    "placeholder": "Taip mesej anda...",
+    "send": "Hantar",
+    "aiModel": "Model AI",
+    "searchEngine": "Enjin Carian",
+    "tavilySearch": "Tavily AI Search",
+    "defaultSearch": "Carian Lalai",
+    "googleSearch": "Google",
+    "bingSearch": "Bing",
+    "searching": "Mencari...",
+    "searchComplete": "Carian Selesai",
+    "downloadReport": "Muat Turun Laporan",
+    "expandSnippet": "Kembangkan Petikan",
+    "collapseSnippet": "Runtuhkan Petikan",
+    "copyToClipboard": "Salin ke Papan Klip",
+    "copied": "Disalin!",
+    "newConversation": "Perbualan Baharu",
+    "conversationHistory": "Sejarah Perbualan"
+  },
+  "profile": {
+    "title": "Tetapan Profil",
+    "personalInfo": "Maklumat Peribadi",
+    "username": "Nama Pengguna",
+    "email": "E-mel",
+    "avatar": "Avatar",
+    "language": "Bahasa",
+    "theme": "Tema",
+    "preferences": "Keutamaan",
+    "account": "Tetapan Akaun",
+    "changePassword": "Tukar Kata Laluan",
+    "deleteAccount": "Padam Akaun",
+    "saveChanges": "Simpan Perubahan",
+    "languageChanged": "Bahasa berjaya ditukar"
+  },
+  "languages": {
+    "en": "English",
+    "zh-CN": "简体中文",
+    "es": "Español",
+    "fr": "Français",
+    "de": "Deutsch",
+    "ja": "日本語",
+    "vi": "Tiếng Việt",
+    "ms": "Bahasa Malaysia"
+  },
+  "themes": {
+    "light": "Cahaya",
+    "dark": "Gelap",
+    "auto": "Auto"
+  },
+  "auth": {
+    "login": "Log Masuk",
+    "register": "Daftar",
+    "username": "Nama Pengguna",
+    "password": "Kata Laluan",
+    "confirmPassword": "Sahkan Kata Laluan",
+    "email": "E-mel",
+    "forgotPassword": "Lupa Kata Laluan?",
+    "loginSuccess": "Log masuk berjaya",
+    "registerSuccess": "Pendaftaran berjaya",
+    "loginFailed": "Log masuk gagal",
+    "registerFailed": "Pendaftaran gagal"
+  }
+}
